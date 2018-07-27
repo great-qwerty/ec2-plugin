@@ -34,6 +34,7 @@ import hudson.util.ListBoxModel;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import javax.servlet.ServletException;
@@ -50,6 +51,7 @@ import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.model.DescribeRegionsResult;
 import com.amazonaws.services.ec2.model.Region;
 
+
 /**
  * The original implementation of {@link EC2Cloud}.
  *
@@ -59,6 +61,7 @@ public class AmazonEC2Cloud extends EC2Cloud {
     /**
      * Represents the region. Can be null for backward compatibility reasons.
      */
+
     private String region;
 
     public static final String CLOUD_ID_PREFIX = "ec2-";
@@ -111,7 +114,7 @@ public class AmazonEC2Cloud extends EC2Cloud {
     @Override
     public URL getS3EndpointUrl() {
         try {
-            return new URL("https://" + getRegion() + ".s3.amazonaws.com/");
+            return new URL("https://" + getRegion() + ".s3.amazonaws.com.cn/");
         } catch (MalformedURLException e) {
             throw new Error(e); // Impossible
         }
@@ -154,13 +157,10 @@ public class AmazonEC2Cloud extends EC2Cloud {
             }
 
             try {
-                AWSCredentialsProvider credentialsProvider = createCredentialsProvider(useInstanceProfileForCredentials,
-                        credentialsId);
-                AmazonEC2 client = connect(credentialsProvider, new URL("http://ec2.amazonaws.com"));
-                DescribeRegionsResult regions = client.describeRegions();
-                List<Region> regionList = regions.getRegions();
-                for (Region r : regionList) {
-                    String name = r.getRegionName();
+                List<String> regionList = new ArrayList<String>();
+                regionList.add("cn-north-1");
+                regionList.add("cn-northwest-1");
+                for (String name : regionList) {
                     model.add(name, name);
                 }
             } catch (SdkClientException ex) {

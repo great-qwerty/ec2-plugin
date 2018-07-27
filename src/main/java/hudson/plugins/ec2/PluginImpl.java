@@ -28,6 +28,7 @@ import hudson.Extension;
 import hudson.Plugin;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
+import com.amazonaws.SDKGlobalConfiguration;
 
 /**
  * Added to handle backwards compatibility of xstream class name mapping.
@@ -41,6 +42,7 @@ public class PluginImpl extends Plugin implements Describable<PluginImpl> {
         Jenkins.XSTREAM.alias("hudson.plugins.ec2.EC2Slave", EC2OndemandSlave.class);
         // backward compatibility with the legacy instance type
         Jenkins.XSTREAM.registerConverter(new InstanceTypeConverter());
+        System.setProperty(SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
 
         load();
     }
